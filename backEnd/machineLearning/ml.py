@@ -1171,14 +1171,9 @@ relevancia = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
               1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
               1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-def arrayJson_to_dataFrame(manchete):
+def cria_data_frame(data_json):
 
-    lista_manchetes = [manchete]  # cria uma lista que amarzenará as manchetes
-
-    # cria o setup incial do dataFrame
-    dataset_preparado = {"HTML": lista_manchetes}
-
-    df = pd.DataFrame(data=dataset_preparado)  # cria o dataFrame
+    df = pd.DataFrame(data=data_json)
 
     return df
 # ..............................................................................
@@ -1255,80 +1250,7 @@ def deepClean(manchete):
 # ..............................................................................
 
 
-def encontra_manchete(html):
-
-    if 'type="application/json"' in html:  # verifica se é manchete
-
-        json = ""  # cria uma variavel vaizia que amarzenará o json final
-
-        comecou = False  # verifica se o json desejado já começou
-
-        # percorre o html
-        for i in range(len(html)):
-
-            word = html[i]  # pega a letra atual
-
-            # se comecou o json adiciona
-            if word == "{" and comecou == False:
-                comecou = True
-                json += word
-
-            # se já passou do começo adiciona
-            elif comecou == True and str(html[i:i+9]) != "</script>":
-                json += word
-
-            # se acabou para o for
-            elif comecou == True and str(html[i:i+9]) == "</script>":
-                break
-
-        json_true = js.loads(json)  # transforma em json
-
-        # pega as manchetes em forma de lista
-        manchetes = json_true["cards"][0]["widgets"]
-
-        return manchetes
-
-    else:
-        return False
-# ..............................................................................
-
-
-def cria_dic(html, manchetes, links):
-
-    lista = encontra_manchete(html)  # cria lista das manchetes
-
-    if lista != False:
-
-        for card in lista:  # percorre a lista encontrada
-
-            manchetes.append(card["title"])  # adiciona o título
-            links.append(card["url"])  # adiciona o link
-
-    return [manchetes, links]
-# ..............................................................................
-
-
-def prepara_dataset(data):
-
-    coluna_manchetes = []  # cria uma lista vazia para as manchetes
-    coluna_url = []  # cria uma lista vazia para os links
-
-    try:
-        coluna_manchetes, coluna_url = data["HTML"].apply(
-            lambda x: cria_dic(x, coluna_manchetes, coluna_url))
-
-    except:
-        dataset_preparado = {
-            "Manchetes": coluna_manchetes,
-            "Links": coluna_url}
-
-    return dataset_preparado
-# ..............................................................................
-
-
-def cria_prop(dicionario):
-
-    df = pd.DataFrame(data=dicionario)  # cria um data_set com o dicionario
+def cria_prop(df):
 
     df["Manchetes"] = df["Manchetes"].apply(
         lambda x: deepClean(x))  # faz limpeza no data_set
@@ -1400,21 +1322,17 @@ def dataFrame_to_arrayJson(data):
 
 def runAll(arrayJson, data_to_train):
 
-    for_train = df # dataSet para treinar
+    for_train = data_to_train # dataSet para treinar
 
     count_vect = CountVectorizer()  # cria uma instância para vetorizar
 
     model = treina_modelo(for_train, count_vect)  # treina o modelo
 
-    # cria um dataFrame com o arrayJson
-    dataFrame = arrayJson_to_dataFrame(arrayJson)
+    dataFrame = cria_data_frame(arrayJson) # cria um dataFrame com os dados
 
-    # cria o dicionario para transformar em dataFrame
-    dicionario = prepara_dataset(dataFrame)
+    data_frame_limpo = cria_prop(dataFrame)  # cria o dataFrame preparado
 
-    data_frame = cria_prop(dicionario)  # cria o dataFrame preparado
-
-    data_final = prev(model, data_frame, count_vect)  # preve os dados de input
+    data_final = prev(model, data_frame_limpo, count_vect)  # preve os dados de input
 
     # filtra somente os relevantes
     resposta = data_final.loc[data_final["Relevância"] == 1]
@@ -1429,15 +1347,19 @@ def runAll(arrayJson, data_to_train):
         return formated
 # ..............................................................................
 
+manchetes_para_classificar = js.loads(sys.argv[1])
+
+print(manchetes_para_classificar)
+
 data = {
-        "Manchete":manchetes,
-        "Relevância":relevancia
+        "Manchete": manchetes,
+        "Relevância": relevancia
 }
 
 df = pd.DataFrame(data=data)
 
 # usa o argumento do front para filtrar dados
-filtered_data = runAll(sys.argv[1], df)
+filtered_data = runAll(manchetes_para_classificar, df)
 
 results = {"filtered": filtered_data}  # cria os resultados
 
