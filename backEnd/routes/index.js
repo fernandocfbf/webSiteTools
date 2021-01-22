@@ -4,48 +4,56 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+	res.render('index', { title: 'Express' });
 });
 
 //machine learning process
-router.post('/machineLearning', function (req, res) {
+router.post('/machineLearning', async function (req, res) {
 
-  var functionToString = require("../functions/data_to_string")
-  var functionCompileData = require("../functions/compile_data")
+	var functionToString = require("../functions/data_to_string")
+	var functionCompileData = require("../functions/compile_data")
 
-  var { spawn } = require('child_process')
+	var { spawn } = require('child_process')
 
-  try {
+	console.log("running...")
 
-    const manchetes = req.body.manchetes //pega as manchetes do front
+	try {
 
-    var resposta = functionCompileData(manchetes) //cria as lista de manchete e links
+		const manchetes = req.body.manchetes //pega as manchetes do front
 
-    var data_to_send = {
-      "Manchetes": resposta[0],
-      "Links": resposta[1]
-    }
+		var resposta = functionCompileData(manchetes) //cria as lista de manchete e links
 
-    var childPython = spawn('python', ['./machineLearning/ml.py', JSON.stringify(data_to_send)])
+		var data_to_send = {
+			"Manchetes": resposta[0],
+			"Links": resposta[1]
+		}
 
-    childPython.stdout.on('data', function (data) {
-      console.log(`stdout: ${data}`)
-    })
+		var childPython = spawn('python', ['./machineLearning/ml.py', JSON.stringify(data_to_send)])
 
-    childPython.stderr.on('data', (data) => {
-      console.error('stderr: ', data.toString('utf8'))
-    })
+		childPython.stdout.on('data', function (data) {
+			if (data.toString('utf8') == "false") {
+				res.json(false)
+				res.end()
+			} else {
+				var json = data.toString('utf8')
+				console.log(json)
+				res.json(json)
+				res.end()
+			}
 
-    childPython.on('close', (code) => {
-      console.log("child process exited with code ", code)
-    })
+		})
 
-    res.json()
-    res.end()
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
 
-  } catch (err) {
-    console.log(err)
-  }
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
 })
 
 module.exports = router;

@@ -1171,6 +1171,7 @@ relevancia = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
               1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
               1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
+
 def cria_data_frame(data_json):
 
     df = pd.DataFrame(data=data_json)
@@ -1282,8 +1283,8 @@ def treina_modelo(arquivo_pronto, count_vect):
 
 
 def prev(model, dataset_para_prever, count_vect):
-
-    X = dataset_para_prever.loc[:, "Manchetes"]  # pega todas as manchetes
+    
+    X = dataset_para_prever["Manchetes"].tolist()  # pega todas as manchetes
 
     pred = count_vect.transform(X).toarray()  # vetoriza os textos
     predict = model.predict(pred)  # classifica as manchetes
@@ -1322,17 +1323,18 @@ def dataFrame_to_arrayJson(data):
 
 def runAll(arrayJson, data_to_train):
 
-    for_train = data_to_train # dataSet para treinar
+    for_train = data_to_train  # dataSet para treinar
 
     count_vect = CountVectorizer()  # cria uma instância para vetorizar
 
     model = treina_modelo(for_train, count_vect)  # treina o modelo
 
-    dataFrame = cria_data_frame(arrayJson) # cria um dataFrame com os dados
+    dataFrame = cria_data_frame(arrayJson)  # cria um dataFrame com os dados
 
     data_frame_limpo = cria_prop(dataFrame)  # cria o dataFrame preparado
 
-    data_final = prev(model, data_frame_limpo, count_vect)  # preve os dados de input
+    # preve os dados de input
+    data_final = prev(model, data_frame_limpo, count_vect)
 
     # filtra somente os relevantes
     resposta = data_final.loc[data_final["Relevância"] == 1]
@@ -1342,18 +1344,18 @@ def runAll(arrayJson, data_to_train):
         return "false"
 
     else:
-        formated = dataFrame_to_arrayJson(resposta).tolist()[0]  # formata para ser um arrayJson
+        formated = dataFrame_to_arrayJson(resposta).tolist()[
+            0]  # formata para ser um arrayJson
 
         return formated
 # ..............................................................................
 
+
 manchetes_para_classificar = js.loads(sys.argv[1])
 
-print(manchetes_para_classificar)
-
 data = {
-        "Manchete": manchetes,
-        "Relevância": relevancia
+    "Manchete": manchetes,
+    "Relevância": relevancia
 }
 
 df = pd.DataFrame(data=data)
@@ -1361,7 +1363,6 @@ df = pd.DataFrame(data=data)
 # usa o argumento do front para filtrar dados
 filtered_data = runAll(manchetes_para_classificar, df)
 
-results = {"filtered": filtered_data}  # cria os resultados
+print(str(filtered_data))
 
-print(str(results))
 sys.stdout.flush()
