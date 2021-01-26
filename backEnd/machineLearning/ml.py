@@ -1286,7 +1286,13 @@ def prev(model, dataset_para_prever, count_vect):
     
     X = dataset_para_prever["Manchetes"].tolist()  # pega todas as manchetes
 
-    pred = count_vect.transform(X).toarray()  # vetoriza os textos
+    lista_string = []
+
+    for value in X:
+        lista_string.append(str(value))
+
+
+    pred = count_vect.transform(lista_string).toarray()  # vetoriza os textos
     predict = model.predict(pred)  # classifica as manchetes
 
     dataset_para_prever["Relevância"] = pd.Series(

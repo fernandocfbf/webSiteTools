@@ -23,6 +23,8 @@ router.post('/machineLearning', async function (req, res) {
 
 		var resposta = functionCompileData(manchetes) //cria as lista de manchete e links
 
+		console.log(resposta[0].length)
+
 		var data_to_send = {
 			"Manchetes": resposta[0],
 			"Links": resposta[1]
@@ -54,6 +56,35 @@ router.post('/machineLearning', async function (req, res) {
 	} catch (err) {
 		console.log(err)
 	}
+})
+
+//web scraping process
+router.get('/webScraping_social', async function (req, res) {
+	var { spawn } = require('child_process')
+	console.log("Running...")
+
+	try {
+		var childPython = spawn('python', ['./webScraping/socialFinance.py'])
+
+		childPython.stdout.on('data', function (data) {
+			var json = data.toString('utf8')
+			console.log(json)
+			res.json(json)
+			res.end()
+		})
+
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
+
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
+
 })
 
 module.exports = router;
