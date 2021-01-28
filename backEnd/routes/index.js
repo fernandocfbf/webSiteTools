@@ -58,7 +58,7 @@ router.post('/machineLearning', async function (req, res) {
 	}
 })
 
-//web scraping process
+//web scraping process social finance
 router.get('/webScraping_social', async function (req, res) {
 	var { spawn } = require('child_process')
 	console.log("Running...")
@@ -68,7 +68,6 @@ router.get('/webScraping_social', async function (req, res) {
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
-			console.log(json)
 			res.json(json)
 			res.end()
 		})
@@ -87,4 +86,35 @@ router.get('/webScraping_social', async function (req, res) {
 
 })
 
+//web scraping process
+router.get('/webScraping_instiglio', async function (req, res) {
+	var { spawn } = require('child_process')
+	console.log("Running...")
+
+	try {
+		var childPython = spawn('python', ['./webScraping/instiglio.py'])
+
+		childPython.stdout.on('data', function (data) {
+			var json = data.toString('utf8')
+			res.json(json)
+			res.end()
+		})
+
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
+
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
+
+})
+
+
 module.exports = router;
+
+

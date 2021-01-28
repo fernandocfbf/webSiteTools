@@ -6,17 +6,16 @@ Created on Mon Aug 24 19:58:37 2020
 """
 import pandas as pd
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import sys
 import os
-
-print(os.getcwd())
 
 #determina a url do site desejado
 url = "https://sibdatabase.socialfinance.org.uk/"
 
 #cria o webdriver
-driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
+driver = webdriver.Chrome(ChromeDriverManager().install())
 
 #pega o conteúdo da url
 driver.get(url)
@@ -49,11 +48,11 @@ def acha_lista(numero_de_tentativas, css_code_selector):
     #caso o número de tentativas seja igual ao número limite, 
     #não foi possível concluir a ação
     if tentativa_atual == numero_de_tentativas:
-        print("Número de tentativas excedidas")
+        pass
     
     #caso contrário, informa que passou no teste
     else:
-        print("Pass!")
+        pass
         
     return elementos
 
@@ -77,7 +76,7 @@ def le_excel_social_finance(excel):
     lista = list()
     
     #cria um dataframe com o arquivo excel
-    df = pd.read_excel(excel)
+    df = pd.read_excel(excel, engine='openpyxl')
     
     #adiciona todas as linhas na lista de elementos
     df['informacoes'].apply(lambda x: lista.append(x))
@@ -128,10 +127,10 @@ def lista_links(ids_projetos):
     return lista_links
     
 #------------------------------------------------------------------------------  
-def atualizaBackUP(lista_com_ids):
+def atualizaBackUP(lista_com_ids, path_name):
     
     #lê o arquivo excel
-    df = pd.read_excel("./Backup/socialFinance.xlsx")
+    df = pd.read_excel(path_name, engine='openpyxl')
     
     for id_ in lista_com_ids:
         
@@ -141,14 +140,15 @@ def atualizaBackUP(lista_com_ids):
         #escreve a linha no excel
         df = df.append(new_row, ignore_index=True)
     
-    df.to_excel("./Backup/socialFinance.xlsx", index=False)
-    
+    df.to_excel(path_name, engine='openpyxl', index=False)
     return 
 
 #------------------------------------------------------------------------------
-                
+
+path = os.path.dirname(__file__) + "/Backup/socialFinance.xlsx"
+
 #cria a lista com projetos já inseridos
-lista_projetos_inseridos = le_excel_social_finance("./Backup/socialFinance.xlsx")
+lista_projetos_inseridos = le_excel_social_finance(path)
 
 #encontra a lista de projetos com os respectivos códigos
 lista_de_projetos = acha_lista(1000, "#ngo > div.project-list.clearfix > div")
@@ -163,7 +163,7 @@ lista_ids = separa_id(lista_de_projetos_novos)
 lista_links_novos = lista_links(lista_ids)
 
 #atualizando a lista de ids backups
-atualizaBackUP(lista_de_projetos_novos)
+atualizaBackUP(lista_de_projetos_novos, path)
 
 print(lista_links_novos)
 sys.stdout.flush()

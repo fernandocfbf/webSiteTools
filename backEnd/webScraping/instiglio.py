@@ -1,7 +1,9 @@
 import pandas as pd
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import sys
+import os
 
 
 ##----------------------------------------------
@@ -56,10 +58,10 @@ def comparaListas(lista1, lista2):
     return resposta
 
 ##----------------------------------------------  
-def atualizaBackUP(lista_com_links):
+def atualizaBackUP(lista_com_links, path_name):
     
     #lê o arquivo excel
-    df = pd.read_excel("./Backup/instiglio.xlsx")
+    df = pd.read_excel(path_name, engine='openpyxl')
     
     for id_ in lista_com_links:
         
@@ -69,17 +71,20 @@ def atualizaBackUP(lista_com_links):
         #escreve a linha no excel
         df = df.append(new_row, ignore_index=True)
     
-    df.to_excel("./Backup/instiglio.xlsx", index=False)
+    df.to_excel(path_name, engine='openpyxl', index=False)
     
     return 
 
 ##----------------------------------------------  
+
+#cria a pasta do projeto
+path = os.path.dirname(__file__) + "/Backup/instiglio.xlsx"
             
 #determina a url do site desejado
 url = "https://www.instiglio.org/en/projects/"
 
 #cria o webdriver
-driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
+driver = webdriver.Chrome(ChromeDriverManager().install())
 
 #pega o conteúdo da url
 driver.get(url)
@@ -94,13 +99,13 @@ elementos = driver.find_elements_by_css_selector(".wpb_wrapper [href]")
 lista_links = retornaListaLinks(elementos)
 
 #cria a lista de antigos:
-lista_antigos = pegaListaAntigos("./Backup/instiglio.xlsx")
+lista_antigos = pegaListaAntigos(path)
 
 #cria a lista com os links novos
 lista_novos_links = comparaListas(lista_links, lista_antigos)
 
 #atualiza o arquivo de backup
-atualizaBackUP(lista_novos_links)
+atualizaBackUP(lista_novos_links, path)
 
 print(lista_novos_links)
 sys.stdout.flush()
