@@ -59,15 +59,20 @@ router.post('/machineLearning', async function (req, res) {
 })
 
 //web scraping process social finance
-router.get('/webScraping_social', async function (req, res) {
+router.post('/webScraping_social', async function (req, res) {
 	var { spawn } = require('child_process')
 	console.log("Running...")
 
+	const url = process.env.MONGO_URL
+
+	const automation = req.body.reconhecer
+
 	try {
-		var childPython = spawn('python', ['./webScraping/socialFinance.py'])
+		var childPython = spawn('python', ['./webScraping/socialFinance.py', url, automation])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
+			console.log(data.toString('utf8'))
 			res.json(json)
 			res.end()
 		})
@@ -83,19 +88,23 @@ router.get('/webScraping_social', async function (req, res) {
 	} catch (err) {
 		console.log(err)
 	}
-
 })
 
 //web scraping process
-router.get('/webScraping_instiglio', async function (req, res) {
+router.post('/webScraping_instiglio', async function (req, res) {
 	var { spawn } = require('child_process')
 	console.log("Running...")
 
+	const automation = req.body.reconhecer
+
+	const url = process.env.MONGO_URL
+
 	try {
-		var childPython = spawn('python', ['./webScraping/instiglio.py'])
+		var childPython = spawn('python', ['./webScraping/instiglio.py', url, automation])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
+			console.log(data.toString('utf8'))
 			res.json(json)
 			res.end()
 		})
