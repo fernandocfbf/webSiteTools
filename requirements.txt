@@ -1,0 +1,8 @@
+pandas
+pymongo
+dnspython
+scikit-learn      
+scipy           
+selenium
+webdriver-manager
+textblob
