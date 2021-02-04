@@ -106,10 +106,6 @@ def atualizaBackUP(lista_com_links, url, boolean):
 
 # ----------------------------------------------
 
-
-# cria a pasta do projeto
-path = os.path.dirname(__file__) + "/Backup/instiglio.xlsx"
-
 # determina a url do site desejado
 url = "https://www.instiglio.org/en/projects/"
 
@@ -139,6 +135,9 @@ lista_novos_links = comparaListas(lista_links, lista_antigos)
 
 # atualiza o arquivo de backup
 atualizaBackUP(lista_novos_links, sys.argv[1], sys.argv[2])
+
+#fecha o driver
+driver.close()
 
 print(lista_novos_links)
 sys.stdout.flush()

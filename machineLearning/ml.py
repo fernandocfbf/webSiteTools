@@ -1196,7 +1196,7 @@ def toSingleLanguage(string):
     manchete_min = string.lower()  # tudo vira lower case
 
     try:
-        hi_blob = TextBlob(manchete_min)
+        hi_blob = textblob(manchete_min)
         manchete_pronta = hi_blob.translate(to='en')  # traduz para o inglês
     except:
         manchete_pronta = manchete_min  # caso já seja inglês, não faz nada

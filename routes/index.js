@@ -72,7 +72,6 @@ router.post('/webScraping_social', async function (req, res) {
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
-			console.log(data.toString('utf8'))
 			res.json(json)
 			res.end()
 		})
@@ -90,7 +89,7 @@ router.post('/webScraping_social', async function (req, res) {
 	}
 })
 
-//web scraping process
+//web scraping process instiglio
 router.post('/webScraping_instiglio', async function (req, res) {
 	var { spawn } = require('child_process')
 	console.log("Running...")
@@ -104,7 +103,6 @@ router.post('/webScraping_instiglio', async function (req, res) {
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
-			console.log(data.toString('utf8'))
 			res.json(json)
 			res.end()
 		})
@@ -121,6 +119,68 @@ router.post('/webScraping_instiglio', async function (req, res) {
 		console.log(err)
 	}
 
+})
+
+//web scraping process third sector
+router.post('/webScraping_sector', async function (req, res) {
+	var { spawn } = require('child_process')
+	console.log("Running...")
+
+	const url = process.env.MONGO_URL
+
+	const automation = req.body.reconhecer
+
+	try {
+		var childPython = spawn('python', ['./webScraping/sector.py', url, automation])
+
+		childPython.stdout.on('data', function (data) {
+			var json = data.toString('utf8')
+			res.json(json)
+			res.end()
+		})
+
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
+
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
+})
+
+//web scraping process Go Lab
+router.post('/webScraping_lab', async function (req, res) {
+	var { spawn } = require('child_process')
+	console.log("Running...")
+
+	const url = process.env.MONGO_URL
+
+	const automation = req.body.reconhecer
+
+	try {
+		var childPython = spawn('python', ['./webScraping/sector.py', url, automation])
+
+		childPython.stdout.on('data', function (data) {
+			var json = data.toString('utf8')
+			res.json(json)
+			res.end()
+		})
+
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
+
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
 })
 
 

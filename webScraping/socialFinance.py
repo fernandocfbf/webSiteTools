@@ -150,7 +150,6 @@ def lista_links(ids_projetos):
 
 # ------------------------------------------------------------------------------
 
-
 def atualizaBackUP(lista_com_ids, url, boolean):
 
     if str(boolean) == "true" and len(lista_com_ids) > 0:
@@ -178,23 +177,26 @@ def atualizaBackUP(lista_com_ids, url, boolean):
 #json transformado para ser usado como dataFrame
 json_transfomado = transforma_data(sys.argv[1])
 
-# cria a lista com projetos já inseridos
+#cria a lista com projetos já inseridos
 lista_projetos_inseridos = le_excel_social_finance(json_transfomado)
 
-# encontra a lista de projetos com os respectivos códigos
+#encontra a lista de projetos com os respectivos códigos
 lista_de_projetos = acha_lista(1000, "#ngo > div.project-list.clearfix > div")
 
-# cria lista de novos elementos
+#cria lista de novos elementos
 lista_de_projetos_novos = encontra_novos(lista_de_projetos, lista_projetos_inseridos)
 
-# cria lista somente com os ids
+#cria lista somente com os ids
 lista_ids = separa_id(lista_de_projetos_novos)
 
-# cria uma lista com os links dos projetos novos
+#cria uma lista com os links dos projetos novos
 lista_links_novos = lista_links(lista_ids)
 
-# atualizando a lista de ids backups
+#atualizando a lista de ids backups
 atualizaBackUP(lista_de_projetos_novos, sys.argv[1], sys.argv[2])
+
+#fecha o driver
+driver.close()
 
 print(lista_links_novos)
 sys.stdout.flush()
