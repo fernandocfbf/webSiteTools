@@ -38,7 +38,6 @@ router.post('/machineLearning', async function (req, res) {
 				res.end()
 			} else {
 				var json = data.toString('utf8')
-				console.log(json)
 				res.json(json)
 				res.end()
 			}
