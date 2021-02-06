@@ -176,8 +176,7 @@ total = []
 while pag <= 12:
 
     # determina a url do site desejado
-    url = "https://golab.bsg.ox.ac.uk/knowledge-bank/indigo-data-and-visualisation/impact-bond-dataset-v2/?page=" + \
-        str(pag)
+    url = "https://golab.bsg.ox.ac.uk/knowledge-bank/indigo-data-and-visualisation/impact-bond-dataset-v2/?page=" + str(pag)
 
     # pega o conteúdo da url
     driver.get(url)

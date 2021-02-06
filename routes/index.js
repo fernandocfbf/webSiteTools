@@ -162,7 +162,7 @@ router.post('/webScraping_lab', async function (req, res) {
 	const automation = req.body.reconhecer
 
 	try {
-		var childPython = spawn('python', ['./webScraping/sector.py', url, automation])
+		var childPython = spawn('python', ['./webScraping/goLab.py', url, automation])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
