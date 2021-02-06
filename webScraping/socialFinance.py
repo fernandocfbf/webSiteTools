@@ -7,6 +7,7 @@ Created on Mon Aug 24 19:58:37 2020
 import pandas as pd
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 import time
 import sys
