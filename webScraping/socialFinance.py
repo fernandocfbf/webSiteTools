@@ -16,7 +16,7 @@ import os
 url = "https://sibdatabase.socialfinance.org.uk/"
 
 # cria o webdriver
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
 
 # pega o conteúdo da url
 driver.get(url)

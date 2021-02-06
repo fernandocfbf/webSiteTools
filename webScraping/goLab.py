@@ -165,7 +165,7 @@ def apenas_links(lista):
 
 
 # cria o webdriver
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
 
 # página atual
 pag = 1

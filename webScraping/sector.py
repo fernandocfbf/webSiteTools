@@ -107,7 +107,7 @@ def atualizaBackUP(lista_com_ids, url, boolean):
 url = "https://www.thirdsectorcap.org/projects/"
 
 #cria o webdriver
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
 
 # pega o conteúdo da url
 driver.get(url)

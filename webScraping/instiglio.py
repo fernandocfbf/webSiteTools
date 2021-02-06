@@ -110,7 +110,7 @@ def atualizaBackUP(lista_com_links, url, boolean):
 url = "https://www.instiglio.org/en/projects/"
 
 # cria o webdriver
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
 
 # pega o conteúdo da url
 driver.get(url)
