@@ -11,14 +11,18 @@ from pymongo import MongoClient
 import time
 import sys
 import os
-import pathlib
-path = str(pathlib.Path(socialFinance.py).parent.absolute()) + "/chromedriver.exe"
+
+GOOGLE_CHROME_BIN = sys.argv[2]
+CHROMEDRIVER_PATH = sys.argv[3]
+
+chrome_options = Options()
+chrome_options.binary_location = GOOGLE_CHROME_BIN
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox')
+driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
 
 # determina a url do site desejado
 url = "https://sibdatabase.socialfinance.org.uk/"
-
-# cria o webdriver
-driver = webdriver.Chrome(executable_path=path)
 
 # pega o conteúdo da url
 driver.get(url)
