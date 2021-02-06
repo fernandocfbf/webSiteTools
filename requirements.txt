@@ -6,3 +6,4 @@ scipy
 selenium
 webdriver-manager
 textblob
+pathlib

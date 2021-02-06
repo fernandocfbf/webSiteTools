@@ -11,12 +11,14 @@ from pymongo import MongoClient
 import time
 import sys
 import os
+import pathlib
+path = str(pathlib.Path(__file__).parent.absolute()) + "/chromedriver.exe"
 
 # determina a url do site desejado
 url = "https://sibdatabase.socialfinance.org.uk/"
 
 # cria o webdriver
-driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
+driver = webdriver.Chrome(executable_path=path)
 
 # pega o conteúdo da url
 driver.get(url)
