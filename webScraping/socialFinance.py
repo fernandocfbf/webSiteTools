@@ -12,7 +12,7 @@ import time
 import sys
 import os
 import pathlib
-path = str(pathlib.Path(__file__).parent.absolute()) + "/chromedriver.exe"
+path = str(pathlib.Path(socialFinance.py).parent.absolute()) + "/chromedriver.exe"
 
 # determina a url do site desejado
 url = "https://sibdatabase.socialfinance.org.uk/"
