@@ -89,8 +89,8 @@ def encontra_novos(lista_de_elementos, inseridos):
 # ------------------------------------------------------------------------------
 
 
-def transforma_data(url):
-    client = MongoClient(str(url))
+def transforma_data(mongo_url):
+    client = MongoClient(str(mongo_url))
     db = client.get_database('sites')
     collection = db.social_finance
     lista = list(collection.find())
