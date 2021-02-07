@@ -90,8 +90,9 @@ def encontra_novos(lista_de_elementos, inseridos):
 
 
 def transforma_data(mongo_url):
-    if(str(sys.argv[3]) == "production"):
-        client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1: 27017/sites")
+
+    if str(sys.argv[3]) == "production":
+        client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1: 27017/sites"))
     
     else:
         client = MongoClient(str(mongo_url))
@@ -177,11 +178,11 @@ def atualizaBackUP(lista_com_ids, mongo_url, boolean):
     if str(boolean) == "true" and len(lista_com_ids) > 0:
 
         if(str(sys.argv[3]) == "production"):
-            client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1: 27017/sites")
+            client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1: 27017/sites"))
     
         else:
             client = MongoClient(str(mongo_url))
-            
+
         db = client.get_database('sites')  # pega o database
         collection = db.social_finance  # pega a collection desejada
 
