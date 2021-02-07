@@ -70,8 +70,7 @@ router.post('/webScraping_social', async function (req, res) {
 		var childPython = spawn('python', ['./webScraping/socialFinance.py', 
 		url, 
 		automation,
-		process.env.GOOGLE_CHROME_BIN, 
-		process.env.CHROMEDRIVER_PATH])
+		process.env.NODE_ENV])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')

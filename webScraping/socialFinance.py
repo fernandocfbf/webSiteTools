@@ -13,14 +13,19 @@ import time
 import sys
 import os
 
-GOOGLE_CHROME_BIN = sys.argv[2]
-CHROMEDRIVER_PATH = sys.argv[3]
+if(str(sys.argv[3]) == "production"):
+    chrome_options = Options()
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--no-sandbox')
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
-chrome_options = Options()
-chrome_options.binary_location = GOOGLE_CHROME_BIN
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--no-sandbox')
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+else:
+    # cria o webdriver
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+
 
 # determina a url do site desejado
 url = "https://sibdatabase.socialfinance.org.uk/"
@@ -32,6 +37,7 @@ driver.get(url)
 time.sleep(10)
 
 # ------------------------------------------------------------------------------
+
 
 def acha_lista(numero_de_tentativas, css_code_selector):
 
@@ -82,6 +88,7 @@ def encontra_novos(lista_de_elementos, inseridos):
 
 # ------------------------------------------------------------------------------
 
+
 def transforma_data(url):
     client = MongoClient(str(url))
     db = client.get_database('sites')
@@ -95,6 +102,7 @@ def transforma_data(url):
     return resposta
 
 # ------------------------------------------------------------------------------
+
 
 def le_excel_social_finance(data_to_df):
 
@@ -151,20 +159,22 @@ def lista_links(ids_projetos):
     lista_links = list()
 
     for id_projeto in ids_projetos:
-        lista_links.append("https://sibdatabase.socialfinance.org.uk/?project_id={0}".format(id_projeto))
+        lista_links.append(
+            "https://sibdatabase.socialfinance.org.uk/?project_id={0}".format(id_projeto))
 
     return lista_links
 
 # ------------------------------------------------------------------------------
 
+
 def atualizaBackUP(lista_com_ids, url, boolean):
 
     if str(boolean) == "true" and len(lista_com_ids) > 0:
-        client = MongoClient(str(url)) #conecta com o banco de dados
-        db = client.get_database('sites') #pega o database
-        collection = db.social_finance #pega a collection desejada
+        client = MongoClient(str(url))  # conecta com o banco de dados
+        db = client.get_database('sites')  # pega o database
+        collection = db.social_finance  # pega a collection desejada
 
-        lista_to_insert = [] #lista que amarzenará os novos documentos
+        lista_to_insert = []  # lista que amarzenará os novos documentos
 
         for id_ in lista_com_ids:
 
@@ -174,35 +184,37 @@ def atualizaBackUP(lista_com_ids, url, boolean):
             # adiciona o novo documento
             lista_to_insert.append(new_row)
 
-        collection.insert_many(lista_to_insert) #atualiza os documentos
+        collection.insert_many(lista_to_insert)  # atualiza os documentos
     else:
         pass
     return
 
 # ------------------------------------------------------------------------------
 
-#json transformado para ser usado como dataFrame
+
+# json transformado para ser usado como dataFrame
 json_transfomado = transforma_data(sys.argv[1])
 
-#cria a lista com projetos já inseridos
+# cria a lista com projetos já inseridos
 lista_projetos_inseridos = le_excel_social_finance(json_transfomado)
 
-#encontra a lista de projetos com os respectivos códigos
+# encontra a lista de projetos com os respectivos códigos
 lista_de_projetos = acha_lista(1000, "#ngo > div.project-list.clearfix > div")
 
-#cria lista de novos elementos
-lista_de_projetos_novos = encontra_novos(lista_de_projetos, lista_projetos_inseridos)
+# cria lista de novos elementos
+lista_de_projetos_novos = encontra_novos(
+    lista_de_projetos, lista_projetos_inseridos)
 
-#cria lista somente com os ids
+# cria lista somente com os ids
 lista_ids = separa_id(lista_de_projetos_novos)
 
-#cria uma lista com os links dos projetos novos
+# cria uma lista com os links dos projetos novos
 lista_links_novos = lista_links(lista_ids)
 
-#atualizando a lista de ids backups
+# atualizando a lista de ids backups
 atualizaBackUP(lista_de_projetos_novos, sys.argv[1], sys.argv[2])
 
-#fecha o driver
+# fecha o driver
 driver.close()
 
 print(lista_links_novos)
