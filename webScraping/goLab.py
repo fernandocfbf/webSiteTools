@@ -91,7 +91,12 @@ def soma_total(total, lista_projetos, lista_links):
 # ------------------------------------------------------------------
 
 def projetos_antigos(url):
-    client = MongoClient(str(url))
+    if str(sys.argv[3]) == "production":
+        client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1:27017/sites"))
+    
+    else:
+        client = MongoClient(str(mongo_url))
+
     db = client.get_database('sites')
     collection = db.go_lab
     lista = list(collection.find())
@@ -108,7 +113,12 @@ def projetos_antigos(url):
 def atualizaBackUP(lista_com_links, url, boolean):
 
     if str(boolean) == "true" and len(lista_com_links) > 0:
-        client = MongoClient(str(url))  # conecta com o banco de dados
+        if str(sys.argv[3]) == "production":
+            client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1:27017/sites"))
+    
+        else:
+            client = MongoClient(str(mongo_url))
+            
         db = client.get_database('sites')  # pega o database
         collection = db.go_lab  # pega a collection desejada
 
@@ -164,8 +174,18 @@ def apenas_links(lista):
 # ----------------------------------------------
 
 
-# cria o webdriver
-driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
+if(str(sys.argv[3]) == "production"):
+    chrome_options = Options()
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--no-sandbox')
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+
+else:
+    # cria o webdriver
+    driver = webdriver.Chrome(ChromeDriverManager().install())
 
 # página atual
 pag = 1

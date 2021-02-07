@@ -71,6 +71,7 @@ router.post('/webScraping_social', async function (req, res) {
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
+			console.log("RUNNED SOCIAL")
 			res.json(json)
 			res.end()
 		})
@@ -98,10 +99,11 @@ router.post('/webScraping_instiglio', async function (req, res) {
 	const url = process.env.MONGO_URL
 
 	try {
-		var childPython = spawn('python', ['./webScraping/instiglio.py', url, automation])
+		var childPython = spawn('python', ['./webScraping/instiglio.py', url, automation, process.env.NODE_ENV])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
+			console.log("RUNNED INSTIGLIO")
 			res.json(json)
 			res.end()
 		})
@@ -130,10 +132,11 @@ router.post('/webScraping_sector', async function (req, res) {
 	const automation = req.body.reconhecer
 
 	try {
-		var childPython = spawn('python', ['./webScraping/sector.py', url, automation])
+		var childPython = spawn('python', ['./webScraping/sector.py', url, automation, process.env.NODE_ENV])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
+			console.log("RUNNED SECTOR")
 			res.json(json)
 			res.end()
 		})
@@ -161,10 +164,11 @@ router.post('/webScraping_lab', async function (req, res) {
 	const automation = req.body.reconhecer
 
 	try {
-		var childPython = spawn('python', ['./webScraping/goLab.py', url, automation])
+		var childPython = spawn('python', ['./webScraping/goLab.py', url, automation, process.env.NODE_ENV])
 
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
+			console.log("RUNNED GOLAB")
 			res.json(json)
 			res.end()
 		})

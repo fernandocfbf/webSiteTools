@@ -84,7 +84,12 @@ def comparaListas(lista1, lista2):
 def atualizaBackUP(lista_com_links, url, boolean):
 
     if str(boolean) == "true" and len(lista_com_links) > 0:
-        client = MongoClient(str(url))  # conecta com o banco de dados
+        if str(sys.argv[3]) == "production":
+            client = MongoClient(os.getenv("MONGO_URL", "mongodb://127.0.0.1:27017/sites"))
+    
+        else:
+            client = MongoClient(str(mongo_url))
+
         db = client.get_database('sites')  # pega o database
         collection = db.instiglio  # pega a collection desejada
 
@@ -109,8 +114,18 @@ def atualizaBackUP(lista_com_links, url, boolean):
 # determina a url do site desejado
 url = "https://www.instiglio.org/en/projects/"
 
-# cria o webdriver
-driver = webdriver.Chrome(executable_path=r'./chromedriver.exe')
+if(str(sys.argv[3]) == "production"):
+    chrome_options = Options()
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--no-sandbox')
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+
+else:
+    # cria o webdriver
+    driver = webdriver.Chrome(ChromeDriverManager().install())
 
 # pega o conteúdo da url
 driver.get(url)
