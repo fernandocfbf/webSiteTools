@@ -8,6 +8,7 @@ Created on Sun Aug 30 11:59:35 2020
 import pandas as pd
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 import time
 import sys
@@ -118,7 +119,7 @@ def atualizaBackUP(lista_com_links, url, boolean):
     
         else:
             client = MongoClient(str(mongo_url))
-            
+
         db = client.get_database('sites')  # pega o database
         collection = db.go_lab  # pega a collection desejada
 
