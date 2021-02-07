@@ -167,10 +167,10 @@ def lista_links(ids_projetos):
 # ------------------------------------------------------------------------------
 
 
-def atualizaBackUP(lista_com_ids, url, boolean):
+def atualizaBackUP(lista_com_ids, mongo_url, boolean):
 
     if str(boolean) == "true" and len(lista_com_ids) > 0:
-        client = MongoClient(str(url))  # conecta com o banco de dados
+        client = MongoClient(str(mongo_url))  # conecta com o banco de dados
         db = client.get_database('sites')  # pega o database
         collection = db.social_finance  # pega a collection desejada
 
