@@ -3,7 +3,8 @@ pymongo
 dnspython
 scikit-learn      
 scipy           
-selenium
+selenium==3.141.0
+urllib3==1.25.10
 webdriver-manager
 textblob
 pathlib
