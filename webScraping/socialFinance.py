@@ -13,7 +13,7 @@ import time
 import sys
 import os
 
-GOOGLE_CHROME_BIN = os.environ.get("GOOGLE_CHROME_BIN", "chromedriver")
+GOOGLE_CHROME_BIN = sys.argv[2]
 CHROMEDRIVER_PATH = sys.argv[3]
 
 chrome_options = Options()
