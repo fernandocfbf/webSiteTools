@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 import sys
 import time
+import os
 import pandas as pd
 
 # ------------------------------------------------------------------------------
