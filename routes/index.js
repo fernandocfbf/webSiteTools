@@ -33,6 +33,7 @@ router.post('/machineLearning', async function (req, res) {
 		var childPython = spawn('python', ['./machineLearning/ml.py', JSON.stringify(data_to_send)])
 
 		childPython.stdout.on('data', function (data) {
+			console.log("DATA >>>:", data.toString('utf8'))
 			if (data.toString('utf8') == "false") {
 				res.json(false)
 				res.end()

@@ -11,6 +11,8 @@ import json as js
 from textblob import TextBlob
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+#from sklearn.model_selection import train_test_split
+#from sklearn.metrics import confusion_matrix
 from sklearn import svm
 import pickle
 import sys
@@ -1264,19 +1266,23 @@ def treina_modelo(arquivo_pronto, count_vect):
 
     # pega toda a coluna de manchetes
     X_para_treinar = arquivo_pronto.loc[:, "Manchete"]
+
     # pega toda a coluna de relevância
     Y_para_treinar = arquivo_pronto.loc[:, "Relevância"]
 
-    X_train_counts = count_vect.fit_transform(
-        X_para_treinar).toarray()  # vetoriza os dados
+    X_train_counts = count_vect.fit_transform(X_para_treinar).toarray()  # vetoriza os dados
 
-    # Aplicando o modelo SVM (Support Vector Machine)
+    #X_train, X_test, y_train, y_test = train_test_split(X_train_counts, Y_para_treinar, test_size=0.33, random_state=42)
 
     # Aplicando o modelo SVM (Support Vector Machine)
     model = svm.SVC(kernel='linear')  # Kernel
 
     # Dando fit no modelo SVM usando o dataset de treino
     model.fit(X_train_counts, Y_para_treinar)
+
+    #predict = model.predict(X_test)  # classifica as manchetes
+
+    #tn, fp, fn, tp = confusion_matrix(predict, y_test).ravel()
 
     return model
 # ..............................................................................
