@@ -1,6 +1,7 @@
 var express = require('express');
 const { type } = require('os');
 var router = express.Router();
+const axios = require("axios")
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -187,6 +188,29 @@ router.post('/webScraping_lab', async function (req, res) {
 	}
 })
 
+router.get('/googleAlerts', async function (req, res) {
+	var functionHandleCutData = require("../functions/handleCutData")
+	var functionHandleFormatData = require("../functions/handleFormatData")
+
+	const spreed_id = "15GTI2RsLFbTmgN016DIT5k0jvkzvDzP7VgCFhw4JzHQ" //google spreed id
+	const url = "https://spreadsheets.google.com/feeds/list/" + spreed_id + "/od6/public/values?alt=json"
+	var response_data = []
+	await axios.get(url).then(response => {
+		const cutData = functionHandleCutData(2, response.data.feed.entry)
+		const formatedData = functionHandleFormatData(cutData)
+		response_data.push(formatedData)
+		res.json({
+			"message":"success",
+			"data": formatedData
+		})
+	}).catch(err => {
+		res.json({
+			"message": "fail",
+			"error": err
+		})
+	})
+	res.end()
+})
 
 module.exports = router;
 
