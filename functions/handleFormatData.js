@@ -3,6 +3,7 @@ function handleFormatData(data) {
   for (var i = 0; i < data.length; i++) {
 
     const formated = {
+      "id": i,
       "data": data[i]['gsx$data']['$t'],
       "de": data[i]['gsx$de']['$t'],
       "hmtl": data[i]['gsx$html']['$t'],
