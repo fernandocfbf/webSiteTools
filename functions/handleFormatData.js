@@ -6,7 +6,7 @@ function handleFormatData(data) {
       "id": i,
       "data": data[i]['gsx$data']['$t'],
       "de": data[i]['gsx$de']['$t'],
-      "hmtl": data[i]['gsx$html']['$t'],
+      "html": data[i]['gsx$html']['$t'],
       "resumo": data[i]['gsx$resumo']['$t'],
     }
 
