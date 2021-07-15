@@ -192,11 +192,12 @@ router.get('/googleAlerts', async function (req, res) {
 	var functionHandleCutData = require("../functions/handleCutData")
 	var functionHandleFormatData = require("../functions/handleFormatData")
 
+	const period = req.query.params //get filter period
 	const spreed_id = "15GTI2RsLFbTmgN016DIT5k0jvkzvDzP7VgCFhw4JzHQ" //google spreed id
 	const url = "https://spreadsheets.google.com/feeds/list/" + spreed_id + "/od6/public/values?alt=json"
 	var response_data = []
 	await axios.get(url).then(response => {
-		const cutData = functionHandleCutData(2, response.data.feed.entry)
+		const cutData = functionHandleCutData(period, response.data.feed.entry)
 		const formatedData = functionHandleFormatData(cutData)
 		response_data.push(formatedData)
 		res.json({
