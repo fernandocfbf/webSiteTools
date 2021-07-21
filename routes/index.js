@@ -192,6 +192,7 @@ router.get('/googleAlerts', async function (req, res) {
 	var functionHandleCutData = require("../functions/handleCutData")
 	var functionHandleFormatData = require("../functions/handleFormatData")
 
+	console.log("A requisição -> ", req)
 	const period = req.query.params //get filter period
 	console.log("Cutting period: ", period)
 	const spreed_id = "15GTI2RsLFbTmgN016DIT5k0jvkzvDzP7VgCFhw4JzHQ" //google spreed id
