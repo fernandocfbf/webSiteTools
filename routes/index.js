@@ -24,8 +24,6 @@ router.post('/machineLearning', async function (req, res) {
 
 		var resposta = functionCompileData(manchetes) //cria as lista de manchete e links
 
-		console.log(resposta[0].length)
-
 		var data_to_send = {
 			"Manchetes": resposta[0],
 			"Links": resposta[1]
@@ -34,7 +32,8 @@ router.post('/machineLearning', async function (req, res) {
 		var childPython = spawn('python', ['./machineLearning/ml.py', JSON.stringify(data_to_send)])
 
 		childPython.stdout.on('data', function (data) {
-			console.log("DATA >>>:", data.toString('utf8'))
+			var data_filtered = data.toString('utf8').split(',').length
+			console.log("Results: ", resposta[0].length, '/ ',data_filtered)
 			if (data.toString('utf8') == "false") {
 				res.json(false)
 				res.end()
