@@ -187,12 +187,12 @@ router.post('/webScraping_lab', async function (req, res) {
 	}
 })
 
+//get googleAlert Emails
 router.get('/googleAlerts', async function (req, res) {
 	var functionHandleCutData = require("../functions/handleCutData")
 	var functionHandleFormatData = require("../functions/handleFormatData")
 
 	const period = parseInt(req.query.period) //get filter period
-	console.log("Cutting period: ", period)
 	const spreed_id = "15GTI2RsLFbTmgN016DIT5k0jvkzvDzP7VgCFhw4JzHQ" //google spreed id
 	const url = "https://spreadsheets.google.com/feeds/list/" + spreed_id + "/od6/public/values?alt=json"
 	var response_data = []
@@ -210,6 +210,33 @@ router.get('/googleAlerts', async function (req, res) {
 			"error": err
 		})
 	})
+	res.end()
+})
+
+router.get('/database', async function(req, res){
+	const functionSumAmounts = require('../functions/sumAmounts')
+
+	const spreed_id = '1j4GfVtAGMDIR3zhX9Ypogaae9JqmT2WQ7ZZRIZXg3Do' //google spreed id
+	const url = "https://spreadsheets.google.com/feeds/list/" + spreed_id + "/od6/public/values?alt=json"
+	await axios.get(url).then(response => {
+		//console.log('response -> ', response.data.feed.entry)
+		response['size'] = response.data.feed.entry.length //get database size
+		const {years, investedSum, peopleSum, fields, countries} = functionSumAmounts(response.data.feed.entry)
+
+		res.json({
+			'message': 'success',
+			'years': years,
+			'investedSum': investedSum,
+			'peopleSum': peopleSum,
+			'fields': fields,
+			'countries': countries
+		})
+	}).catch((err) =>  {
+		res.json({
+			'message': 'failed'
+		})
+	})
+
 	res.end()
 })
 
