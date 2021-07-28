@@ -1,3 +1,5 @@
+const countries_coordinates = require('../utils/countries') 
+
 function sumAmounts(data) {
     var years = {}
     var fields = {}
@@ -19,11 +21,18 @@ function sumAmounts(data) {
                 }
             }
         }
-        if (el['gsx$country']['$t'].toString().length > 0){
+        if (el['gsx$country']['$t'].toString().length > 0 ){
             if (countries.hasOwnProperty(el['gsx$country']['$t'])) {
-                countries[el['gsx$country']['$t']] += 1
+                countries[el['gsx$country']['$t']]['sum'] += 1
             } else {
-                countries[el['gsx$country']['$t']] = 1
+                
+                const country = countries_coordinates.find(elem => elem.country == el['gsx$country']['$t'])
+                console.log(el['gsx$country']['$t'], country)
+                countries[el['gsx$country']['$t']] ={
+                    'sum': 1,
+                    'latitude': country.latitude,
+                    'longitude': country.longitude
+                }
             }
         }
 

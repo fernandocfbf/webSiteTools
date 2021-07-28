@@ -220,11 +220,12 @@ router.get('/database', async function(req, res){
 	const url = "https://spreadsheets.google.com/feeds/list/" + spreed_id + "/od6/public/values?alt=json"
 	await axios.get(url).then(response => {
 		//console.log('response -> ', response.data.feed.entry)
-		response['size'] = response.data.feed.entry.length //get database size
+		const size = response.data.feed.entry.length //get database size
 		const {years, investedSum, peopleSum, fields, countries} = functionSumAmounts(response.data.feed.entry)
 
 		res.json({
 			'message': 'success',
+			'size': size,
 			'years': years,
 			'investedSum': investedSum,
 			'peopleSum': peopleSum,
@@ -232,6 +233,7 @@ router.get('/database', async function(req, res){
 			'countries': countries
 		})
 	}).catch((err) =>  {
+		console.log(err)
 		res.json({
 			'message': 'failed'
 		})
