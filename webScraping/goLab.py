@@ -215,6 +215,7 @@ while pag <= 12:
     # vai para a próxima página
     pag += 1
 
+
 print("Projetos encontrados -> ", total)
 
 # fecha a janela aberta
