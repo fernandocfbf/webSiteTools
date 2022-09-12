@@ -8,8 +8,8 @@ router.get('/', function (req, res, next) {
 	res.render('index', { title: 'Express' });
 });
 
-//machine learning process
-router.post('/machineLearning', async function (req, res) {
+//machine learning process for OBC
+router.post('/machineLearningOBC', async function (req, res) {
 
 	var functionToString = require("../functions/data_to_string")
 	var functionCompileData = require("../functions/compile_data")
@@ -57,6 +57,64 @@ router.post('/machineLearning', async function (req, res) {
 		console.log(err)
 	}
 })
+
+//machine learning process for PPP
+router.post('/machineLearningPPP', async function (req, res) {
+	
+	
+	var functionToString = require("../PPP/functions/data_to_string")
+	var functionCompileData = require("../PPP/functions/compileData")
+	
+
+	var { spawn } = require('child_process')
+
+	console.log("running...")
+
+	try {
+
+		const manchetes = req.body.manchetes //pega as manchetes do front
+		console.log(manchetes)
+
+		var resposta = functionCompileData(manchetes) //cria as lista de manchete e links
+
+		var data_to_send = {
+			"Manchete": resposta[0],
+			"Link": resposta[1]
+		}
+
+		console.log(data_to_send)
+
+		var childPython = spawn('python', ['./PPP/machineLearning/ml.py', JSON.stringify(data_to_send)])
+
+		childPython.stdout.on('data', function (data) {
+			var data_filtered = data.toString('utf8').split(',').length
+			console.log("Results: ", resposta[0].length, '/ ',data_filtered)
+			if (data.toString('utf8') == "false") {
+				res.json(false)
+				res.end()
+			} else {
+				var json = data.toString('utf8')
+				res.json(json)
+				res.end()
+			}
+
+		})
+
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
+
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
+})
+
+
+
 
 //web scraping process social finance
 router.post('/webScraping_social', async function (req, res) {
@@ -170,6 +228,41 @@ router.post('/webScraping_lab', async function (req, res) {
 		childPython.stdout.on('data', function (data) {
 			var json = data.toString('utf8')
 			console.log("RUNNED GOLAB")
+			res.json(json)
+			res.end()
+		})
+
+		childPython.stderr.on('data', (data) => {
+			console.error('stderr: ', data.toString('utf8'))
+		})
+
+		childPython.on('close', (code) => {
+			console.log("child process exited with code ", code)
+		})
+
+	} catch (err) {
+		console.log(err)
+	}
+})
+
+//web scraping process Radar PPP
+router.post('/webScraping_radar', async function (req, res) {
+	var { spawn } = require('child_process')
+	console.log("Running...")
+
+	const url = process.env.MONGO_URL
+	console.log(url)
+
+
+	const automation = req.body.reconhecer
+	console.log(automation)
+
+	try {
+		var childPython = spawn('python', ['./PPP/webScraping/radarPPP.py', url, automation, process.env.NODE_ENV])
+
+		childPython.stdout.on('data', function (data) {
+			var json = data.toString('utf8')
+			console.log("RUNNED RADARPPP")
 			res.json(json)
 			res.end()
 		})
