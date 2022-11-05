@@ -1,0 +1,5 @@
+{
+    "CHROMEDRIVER_PATH" : "/app/.chromedriver/bin/chromedriver",
+    "MONGO_URL" : "mongodb+srv://fernandocfbf:q5MstG6DHU4rmcbd@automation.gskix.mongodb.net/sites?retryWrites=false&w=majority",
+    "NODE_ENV" : "production"
+}
